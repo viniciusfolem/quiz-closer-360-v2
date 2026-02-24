@@ -394,10 +394,10 @@
       document.head.appendChild(vs);
       
       if (pf === 'qualified') launchConfetti();
-      
-      // Reveal CTA after 2:30 (aparece antes do pitch final do vídeo)
+
+      // Reveal CTA immediately below VSL
+      var cta = g('btnCta'), urg = g('urgencyText'), guar = g('guaranteeText');
       setTimeout(function() {
-        var cta = g('btnCta'), urg = g('urgencyText'), guar = g('guaranteeText');
         cta.classList.remove('hidden');
         cta.classList.add('reveal');
         setTimeout(function() {
@@ -407,10 +407,6 @@
         setTimeout(function() {
           guar.classList.remove('hidden');
           guar.classList.add('reveal');
-          // Scroll suave até o CTA para garantir que o usuário veja
-          setTimeout(function() {
-            cta.scrollIntoView({behavior: 'smooth', block: 'center'});
-          }, 300);
         }, 400);
         // Tracking GTM
         if (window.dataLayer) {
@@ -420,7 +416,7 @@
           _sb.from('quiz_sessions').update({cta_revealed_at: new Date().toISOString()})
             .eq('session_id', _sid).then(null, null);
         });
-      }, 125000);
+      }, 1000);
 
       // Tracking no clique do CTA
       g('btnCta').addEventListener('click', function() {

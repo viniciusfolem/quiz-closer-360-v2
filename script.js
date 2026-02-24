@@ -385,7 +385,7 @@
       var container = g('vslContainer');
       var player = document.createElement('vturb-smartplayer');
       player.id = 'vid-' + vsl.id;
-      player.style.cssText = 'display:block;margin:0 auto;width:100%;';
+      player.style.cssText = 'display:block;margin:0 auto;width:100%;height:100%;';
       container.appendChild(player);
 
       var vs = document.createElement('script');

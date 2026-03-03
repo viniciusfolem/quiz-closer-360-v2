@@ -272,10 +272,20 @@
 
   /* ===== SOUND FEEDBACK ===== */
   var _audioCtx = null;
+  function _getAudioCtx() {
+    if (!_audioCtx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) _audioCtx = new AC();
+    }
+    if (_audioCtx && _audioCtx.state === 'suspended') {
+      _audioCtx.resume();
+    }
+    return _audioCtx;
+  }
   function playPop() {
     try {
-      if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      var ctx = _audioCtx;
+      var ctx = _getAudioCtx();
+      if (!ctx) return;
       var osc = ctx.createOscillator();
       var gain = ctx.createGain();
       osc.connect(gain);
@@ -283,11 +293,11 @@
       osc.type = 'sine';
       osc.frequency.setValueAtTime(900, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.18, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
       osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.12);
-    } catch (e) { /* silently fail on unsupported browsers */ }
+      osc.stop(ctx.currentTime + 0.15);
+    } catch (e) { /* silently fail */ }
   }
 
   /* ===== FLOATING POINTS ===== */

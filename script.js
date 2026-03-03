@@ -270,6 +270,26 @@
     $('globalProgress').classList.remove('visible');
   }
 
+  /* ===== SOUND FEEDBACK ===== */
+  var _audioCtx = null;
+  function playPop() {
+    try {
+      if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var ctx = _audioCtx;
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(900, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.18, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.12);
+    } catch (e) { /* silently fail on unsupported browsers */ }
+  }
+
   /* ===== FLOATING POINTS ===== */
   function showFloatPts(pts) {
     var container = $('floatPts');
@@ -442,6 +462,7 @@
     var btn = q.btnColor === 'green' ? btnContGreen : btnCont;
     var handler = function () {
       btn.removeEventListener('click', handler);
+      playPop();
       multiAnswers[q.key] = selected.slice();
 
       // Track
@@ -469,6 +490,7 @@
   function handleSingleSelect(qi, optIdx) {
     if (isTransitioning) return;
     isTransitioning = true;
+    playPop();
 
     var q = questions[qi];
     var opt = q.options[optIdx];
@@ -491,7 +513,6 @@
     // Visual feedback
     var cards = $('optionsList').querySelectorAll('.option-card');
     cards[optIdx].classList.add('selected');
-    if (opt.pts) showFloatPts(opt.pts);
 
     setTimeout(function () {
       for (var i = 0; i < cards.length; i++) {
@@ -570,6 +591,7 @@
 
   /* ===== START QUIZ ===== */
   function startQuiz() {
+    playPop();
     _sid = _uuid();
     try { sessionStorage.setItem('quiz_sid', _sid); } catch (e) { }
     var u = _utms();
@@ -835,6 +857,7 @@
       btn.addEventListener('click', function () {
         if (isTransitioning) return;
         isTransitioning = true;
+        playPop();
         btn.style.pointerEvents = 'none';
         setTimeout(function () { isTransitioning = false; }, 600);
         advanceFlow();
@@ -845,6 +868,7 @@
     $('btnWarningOk').addEventListener('click', function () {
       if (isTransitioning) return;
       isTransitioning = true;
+      playPop();
       setTimeout(function () { isTransitioning = false; }, 600);
       advanceFlow();
     }, { passive: true });

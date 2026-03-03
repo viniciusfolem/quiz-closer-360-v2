@@ -286,17 +286,32 @@
     try {
       var ctx = _getAudioCtx();
       if (!ctx) return;
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(900, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.25, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.15);
+      var t = ctx.currentTime;
+
+      // Nota 1 — E5 (659 Hz) — toque inicial
+      var osc1 = ctx.createOscillator();
+      var gain1 = ctx.createGain();
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(659, t);
+      gain1.gain.setValueAtTime(0.22, t);
+      gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+      osc1.start(t);
+      osc1.stop(t + 0.18);
+
+      // Nota 2 — A5 (880 Hz) — resolve pra cima = sensação de conquista
+      var osc2 = ctx.createOscillator();
+      var gain2 = ctx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(880, t + 0.09);
+      gain2.gain.setValueAtTime(0, t);
+      gain2.gain.setValueAtTime(0.2, t + 0.09);
+      gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+      osc2.start(t + 0.09);
+      osc2.stop(t + 0.3);
     } catch (e) { /* silently fail */ }
   }
 
